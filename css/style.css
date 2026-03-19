@@ -1,0 +1,415 @@
+/* ============================================
+   Photography Portfolio — Minimal Style
+   Inspired by felixodell.com
+   ============================================ */
+
+/* Reset & Base */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #222;
+  background: #fff;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Header ---- */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 40px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* Hamburger */
+.menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 28px;
+  height: 1.5px;
+  background: #222;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* ---- Navigation Overlay ---- */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.nav-overlay.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.nav-close {
+  position: absolute;
+  top: 24px;
+  right: 40px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: #222;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.nav-links {
+  list-style: none;
+  text-align: center;
+}
+
+.nav-links li {
+  margin: 16px 0;
+}
+
+.nav-links a {
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+  opacity: 0.5;
+}
+
+/* ---- Gallery (Home) ---- */
+.gallery {
+  padding: 120px 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gallery-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.gallery-row--2 .gallery-item {
+  flex: 1;
+}
+
+.gallery-row--2-narrow {
+  justify-content: center;
+  padding: 0 10%;
+}
+
+.gallery-row--2-narrow .gallery-item {
+  flex: 1;
+  max-width: 420px;
+}
+
+.gallery-row--1 {
+  justify-content: center;
+}
+
+.gallery-row--1 .gallery-item {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.gallery-row--3 .gallery-item {
+  flex: 1;
+}
+
+.gallery-item {
+  overflow: hidden;
+  display: block;
+}
+
+.gallery-item img {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* ---- Project Page ---- */
+.project {
+  padding: 140px 40px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.project-header {
+  margin-bottom: 50px;
+}
+
+.project-title {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+
+.project-description {
+  font-size: 15px;
+  color: #666;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.project-images {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.project-img img {
+  width: 100%;
+}
+
+.project-img--full {
+  width: 100%;
+}
+
+.project-img--centered {
+  max-width: 75%;
+  margin: 0 auto;
+}
+
+.project-img-row {
+  display: flex;
+  gap: 20px;
+}
+
+.project-img-row .project-img {
+  flex: 1;
+}
+
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid #eee;
+}
+
+.project-nav-link {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: opacity 0.2s;
+}
+
+.project-nav-link:hover {
+  opacity: 0.5;
+}
+
+/* ---- About Page ---- */
+.about {
+  padding: 140px 40px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.about-content {
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
+}
+
+.about-image {
+  flex: 0 0 40%;
+  max-width: 400px;
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-text h1 {
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 24px;
+  letter-spacing: 0.03em;
+}
+
+.about-text p {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 18px;
+  line-height: 1.8;
+}
+
+.about-clients {
+  margin-top: 12px;
+}
+
+.about-contact a {
+  border-bottom: 1px solid #222;
+}
+
+/* ---- Contact Page ---- */
+.contact {
+  padding: 140px 40px 60px;
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 60vh;
+}
+
+.contact-content h1 {
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 24px;
+  letter-spacing: 0.03em;
+}
+
+.contact-content p {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.contact-content a {
+  border-bottom: 1px solid #222;
+}
+
+.contact-social {
+  margin-top: 30px;
+}
+
+.contact-social a {
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: none;
+  transition: opacity 0.2s;
+}
+
+.contact-social a:hover {
+  opacity: 0.5;
+}
+
+/* ---- Footer ---- */
+.footer {
+  padding: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .header {
+    padding: 18px 20px;
+  }
+
+  .gallery {
+    padding: 90px 16px 40px;
+  }
+
+  .gallery-row {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .gallery-row--2-narrow {
+    padding: 0;
+  }
+
+  .gallery-row--2-narrow .gallery-item {
+    max-width: 100%;
+  }
+
+  .project {
+    padding: 100px 16px 40px;
+  }
+
+  .project-img-row {
+    flex-direction: column;
+  }
+
+  .project-img--centered {
+    max-width: 100%;
+  }
+
+  .about {
+    padding: 100px 16px 40px;
+  }
+
+  .about-content {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .about-image {
+    flex: none;
+    max-width: 100%;
+  }
+
+  .contact {
+    padding: 100px 16px 40px;
+  }
+
+  .nav-links a {
+    font-size: 24px;
+  }
+
+  .nav-close {
+    right: 20px;
+  }
+}
