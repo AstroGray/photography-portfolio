@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #222;
   background: #fff;
   line-height: 1.6;
@@ -41,22 +41,27 @@ img {
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 24px 40px;
+  padding: 28px 40px;
   z-index: 100;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
 }
 
 /* Hamburger */
 .menu-toggle {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
