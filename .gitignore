@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# Camera raw files (too large for git)
+*.ARW
+*.arw
+*.CR2
+*.cr2
+*.NEF
+*.nef
+*.RAF
+*.raf
+*.DNG
+*.dng
+
+# Editor / OS noise
+Thumbs.db
+*.swp
+.idea/
+.vscode/
