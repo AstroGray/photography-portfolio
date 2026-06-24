@@ -15,6 +15,9 @@ set -euo pipefail
 BASE_URL="${1:-https://photos.grayhammonphoto.com/photos}"
 INDEX_FILE="${2:-./index.html}"
 BUCKET_PATH="r2:grayhammon-photos/photos"
+MANIFEST="${3:-./docs/photo-categories.tsv}"
+VALID_CATEGORIES="people places things"
+DEFAULT_CATEGORY="things"
 
 # ---- Validate ----
 if [ ! -f "$INDEX_FILE" ]; then
@@ -26,6 +29,30 @@ if ! command -v rclone >/dev/null 2>&1; then
   echo "Error: rclone is not installed or not on PATH" >&2
   exit 1
 fi
+
+# ---- Category manifest ----
+# Maps each photo id to a tab (people | places | things). Missing or
+# unlisted photos fall back to DEFAULT_CATEGORY and are reported at the end.
+if [ ! -f "$MANIFEST" ]; then
+  echo "Warning: manifest $MANIFEST not found — every photo will default to '$DEFAULT_CATEGORY'." >&2
+fi
+
+# lookup_category <photo-id> -> echoes the category for that photo.
+# Falls back to DEFAULT_CATEGORY for unlisted ids or invalid category values.
+lookup_category() {
+  local id="$1" cat=""
+  if [ -f "$MANIFEST" ]; then
+    # First non-comment line whose first field matches the id exactly.
+    cat=$(awk -v id="$id" '
+      /^[[:space:]]*#/ { next }
+      $1 == id { print $2; exit }
+    ' "$MANIFEST")
+  fi
+  case " $VALID_CATEGORIES " in
+    *" $cat "*) echo "$cat" ;;
+    *)          echo "$DEFAULT_CATEGORY" ;;
+  esac
+}
 
 # ---- Fetch photo list from R2 ----
 echo "Fetching photo list from $BUCKET_PATH..."
@@ -51,10 +78,22 @@ echo "Found $count photos"
 gallery_file=$(mktemp)
 trap 'rm -f "$gallery_file"' EXIT
 
+uncategorized=""
+
 while IFS= read -r photo; do
   [ -z "$photo" ] && continue
+  category=$(lookup_category "$photo")
+
+  # Track photos that aren't explicitly listed in the manifest.
+  if [ -f "$MANIFEST" ] && ! awk -v id="$photo" '
+        /^[[:space:]]*#/ { next }
+        $1 == id { found=1 } END { exit !found }
+      ' "$MANIFEST"; then
+    uncategorized="${uncategorized}  - ${photo} (using '${category}')"$'\n'
+  fi
+
   cat >> "$gallery_file" <<EOF
-    <div class="gallery-item">
+    <div class="gallery-item" data-category="${category}">
       <img
         src="${BASE_URL}/${photo}_1600.jpg"
         srcset="${BASE_URL}/${photo}_800.jpg 800w, ${BASE_URL}/${photo}_1600.jpg 1600w, ${BASE_URL}/${photo}_2400.jpg 2400w"
@@ -102,6 +141,14 @@ mv "$tmp_file" "$INDEX_FILE"
 
 echo ""
 echo "Updated $INDEX_FILE with $count photos."
+
+if [ -n "$uncategorized" ]; then
+  echo ""
+  echo "Note: these photos aren't in $MANIFEST yet, so they went to '$DEFAULT_CATEGORY':"
+  printf '%s' "$uncategorized"
+  echo "Add them to the manifest and re-run to place them in People/Places."
+fi
+
 echo ""
 echo "Next steps:"
 echo "  1. Open $INDEX_FILE in a browser to preview"

@@ -158,6 +158,75 @@ img {
   height: auto;
 }
 
+/* ---- Gallery Tabs (People / Places / Things) ----
+   Hidden by default so that with JavaScript disabled every photo shows
+   as one continuous gallery. The inline script in <head> adds `js` to
+   <html>, which reveals the tab bar and enables filtering below. */
+.gallery-tabs {
+  display: none;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 64px;
+}
+
+html.js .gallery-tabs {
+  display: flex;
+}
+
+.gallery-tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 6px;
+  font-family: -apple-system, sans-serif;
+  font-size: 13px;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #999;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.gallery-tab:hover {
+  color: #1a1a1a;
+}
+
+.gallery-tab.is-active {
+  color: #1a1a1a;
+  border-bottom-color: #1a1a1a;
+}
+
+.gallery-tab:focus-visible {
+  outline: 1px solid #1a1a1a;
+  outline-offset: 4px;
+}
+
+/* Filtering: once JS is active, show only items in the chosen category. */
+html.js .gallery-item {
+  display: none;
+}
+
+html.js .gallery-item.is-visible {
+  display: block;
+}
+
+/* Shown by JS only when the active tab has no photos. */
+.gallery-empty {
+  display: none;
+  text-align: center;
+  font-family: -apple-system, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+  padding: 40px 0;
+}
+
+.gallery-empty.is-shown {
+  display: block;
+}
+
 /* ---- About Page ---- */
 .about {
   padding: 160px 32px 80px;
@@ -276,6 +345,16 @@ img {
 
   .gallery {
     padding: 90px 16px 50px;
+  }
+
+  .gallery-tabs {
+    gap: 24px;
+    margin-bottom: 44px;
+  }
+
+  .gallery-tab {
+    font-size: 12px;
+    letter-spacing: 0.12em;
   }
 
   .gallery-item {
