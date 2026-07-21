@@ -12,7 +12,7 @@
 set -euo pipefail
 
 # ---- Config ----
-BASE_URL="${1:-https://photos.grayhammonphoto.com/photos}"
+BASE_URL="${1:-https://photos.grayconnerphoto.com/photos}"
 INDEX_FILE="${2:-./index.html}"
 BUCKET_PATH="r2:grayhammon-photos/photos"
 MANIFEST="${3:-./docs/photo-categories.tsv}"

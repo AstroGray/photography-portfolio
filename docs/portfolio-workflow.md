@@ -1,6 +1,6 @@
 # Portfolio Workflow
 
-How photos get from camera to grayhammonphoto.com.
+How photos get from camera to grayconnerphoto.com.
 
 ## The pipeline at a glance
 
@@ -19,7 +19,7 @@ index.html (gallery block regenerated)
         │
         │   git commit && git push
         ▼
-Cloudflare Pages → grayhammonphoto.com
+GitHub Pages → grayconnerphoto.com
 ```
 
 ## Where things live
@@ -29,12 +29,12 @@ Cloudflare Pages → grayhammonphoto.com
   don't deploy with the site). Which folder a photo is in decides its tab.
 - **Web-ready variants** — `./web-ready/` (also gitignored; regenerable cache)
 - **Public CDN** — Cloudflare R2 bucket `grayhammon-photos`, served via
-  `photos.grayhammonphoto.com`. Files are stored flat (no category in the
+  `photos.grayconnerphoto.com`. Files are stored flat (no category in the
   path), so a photo's URL never changes when it moves between tabs.
 - **Category manifest** — `./docs/photo-categories.tsv`, written automatically
   by `process-photos.sh` from your folders. `generate-gallery.sh` reads it to
   decide which tab each photo goes in. You don't normally edit it by hand.
-- **Site code** — this repo, deploys via Cloudflare Pages on push to main
+- **Site code** — this repo, deploys via GitHub Pages on push to main
 
 ## Adding new photos
 
@@ -63,7 +63,7 @@ Cloudflare Pages → grayhammonphoto.com
    git push
    ```
 
-Cloudflare Pages picks up the push and redeploys within a minute or two.
+GitHub Pages picks up the push and redeploys within a minute or two.
 
 ## Organizing photos into tabs
 
@@ -98,7 +98,7 @@ All photos stay in the page markup regardless of tab — `main.js` just shows
 the ones in the active tab — so search engines and link previews still see
 every image. With JavaScript disabled, the tab bar is hidden and all photos
 show as one gallery. The tabs are also linkable:
-`grayhammonphoto.com/#places` opens straight to Places.
+`grayconnerphoto.com/#places` opens straight to Places.
 
 ## Removing photos from the gallery
 
@@ -164,7 +164,7 @@ Check that the `r2` remote is configured: `rclone listremotes` should
 show `r2:`. If not, reconfigure with `rclone config`.
 
 **Site shows old photos after push**
-Cloudflare Pages cache. Usually clears within a minute or two; if not,
+GitHub Pages cache. Usually clears within a minute or two; if not,
 purge the cache in the Cloudflare dashboard under Caching → Configuration.
 
 **A photo is in the wrong tab, or a tab looks empty**

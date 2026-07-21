@@ -1,7 +1,8 @@
-// main.js — UI behavior for grayhammonphoto.com
+// main.js — UI behavior for grayconnerphoto.com
 // The gallery itself is rendered server-side by scripts/generate-gallery.sh,
 // which writes HTML between <!-- GALLERY_START --> and <!-- GALLERY_END -->
-// in index.html. This file only handles the nav overlay.
+// in index.html. This file handles the nav overlay, the category tab
+// filtering, and shuffling the gallery into a fresh order on each load.
 
 const menuToggle = document.querySelector('.menu-toggle');
 const navOverlay = document.querySelector('.nav-overlay');
@@ -27,6 +28,29 @@ if (menuToggle && navOverlay && navClose) {
       navOverlay.classList.remove('is-open');
     }
   });
+}
+
+// ---- Randomize gallery order on each load ----
+// Client-side only, so search engines and no-JS visitors still get the baked
+// order from generate-gallery.sh. Shuffles the .gallery-item elements in place
+// (the tab bar stays first and the empty message stays last), giving a fresh
+// order on every refresh. Because it reshuffles the whole set, each category's
+// photos also come out in a new order when you switch tabs.
+const galleryEl = document.querySelector('.gallery');
+if (galleryEl) {
+  const shuffleItems = Array.from(galleryEl.querySelectorAll('.gallery-item'));
+  const emptyMsg = galleryEl.querySelector('.gallery-empty');
+
+  // Fisher–Yates shuffle.
+  for (let i = shuffleItems.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffleItems[i], shuffleItems[j]] = [shuffleItems[j], shuffleItems[i]];
+  }
+
+  // Re-insert in the shuffled order, keeping the empty message at the end.
+  // (insertBefore with a null reference simply appends, so this is safe even
+  // if the empty message isn't present.)
+  shuffleItems.forEach((item) => galleryEl.insertBefore(item, emptyMsg));
 }
 
 // ---- Gallery tabs (People / Places / Things) ----
