@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photography Ops — Cheat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --paper: #faf8f3;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a8a;
+    --rule: #1a1a1a;
+    --hairline: rgba(26, 26, 26, 0.15);
+
+    --archive: #6b3a1f;     /* dark amber — archive */
+    --archive-bg: #f0e3d2;
+    --portfolio: #1a4a3a;   /* deep teal — portfolio */
+    --portfolio-bg: #dbe7df;
+    --warn: #8b2113;
+    --warn-bg: #f5dcd5;
+    --check: #2d5016;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 15px;
+  }
+
+  body {
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 40px 20px 80px;
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 23px,
+        rgba(26, 26, 26, 0.03) 23px,
+        rgba(26, 26, 26, 0.03) 24px
+      );
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1.5px solid var(--rule);
+    box-shadow: 6px 6px 0 rgba(26, 26, 26, 0.08);
+  }
+
+  /* ---- Header ---- */
+  .header {
+    padding: 32px 40px 24px;
+    border-bottom: 1.5px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 44px;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .meta {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .meta-row {
+    margin: 2px 0;
+  }
+
+  .meta-label {
+    color: var(--ink-faint);
+  }
+
+  /* ---- Banner ---- */
+  .banner {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 40px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---- Section ---- */
+  .section {
+    border-bottom: 1.5px solid var(--rule);
+  }
+
+  .section:last-child {
+    border-bottom: none;
+  }
+
+  .section-header {
+    padding: 24px 40px 16px;
+    border-bottom: 1px solid var(--hairline);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .section-archive .section-header {
+    background: var(--archive-bg);
+    border-bottom-color: var(--archive);
+  }
+
+  .section-portfolio .section-header {
+    background: var(--portfolio-bg);
+    border-bottom-color: var(--portfolio);
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid currentColor;
+  }
+
+  .section-archive .section-tag { color: var(--archive); }
+  .section-portfolio .section-tag { color: var(--portfolio); }
+
+  .section-summary {
+    padding: 20px 40px;
+    font-size: 17px;
+    color: var(--ink);
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    border-bottom: 1px dashed var(--hairline);
+    line-height: 1.5;
+    max-width: 760px;
+  }
+
+  /* ---- Steps ---- */
+  .steps {
+    padding: 8px 40px 28px;
+  }
+
+  .step {
+    padding: 18px 0;
+    border-bottom: 1px dashed var(--hairline);
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .step:last-child {
+    border-bottom: none;
+  }
+
+  .step-num {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+    padding-top: 2px;
+  }
+
+  .section-archive .step-num { color: var(--archive); }
+  .section-portfolio .step-num { color: var(--portfolio); }
+
+  .step-body h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-body p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 4px 0 10px;
+  }
+
+  /* ---- Code blocks ---- */
+  pre, .cmd {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    font-family: 'JetBrains Mono', monospace;
+    overflow-x: auto;
+    border-left: 3px solid;
+    position: relative;
+  }
+
+  .section-archive pre,
+  .section-archive .cmd {
+    border-left-color: var(--archive);
+  }
+
+  .section-portfolio pre,
+  .section-portfolio .cmd {
+    border-left-color: var(--portfolio);
+  }
+
+  pre + .expect, .cmd + .expect {
+    background: #ebe6db;
+    color: var(--ink);
+    border-left: 3px solid var(--ink);
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .expect::before {
+    content: "→ ";
+    color: var(--ink-soft);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  code {
+    background: rgba(26, 26, 26, 0.08);
+    padding: 1px 5px;
+    font-size: 0.92em;
+    border-radius: 2px;
+  }
+
+  /* ---- Callouts ---- */
+  .note {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--warn);
+    background: var(--warn-bg);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .note strong {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    color: var(--warn);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* ---- Reference (cards) ---- */
+  .reference {
+    padding: 24px 40px 32px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    background: rgba(26, 26, 26, 0.02);
+  }
+
+  .ref-card {
+    border: 1px solid var(--hairline);
+    background: var(--paper);
+    padding: 14px 16px;
+  }
+
+  .ref-card h4 {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+
+  .ref-card dl {
+    font-size: 12px;
+  }
+
+  .ref-card dt {
+    color: var(--ink-faint);
+    margin-top: 6px;
+  }
+
+  .ref-card dd {
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  /* ---- Troubleshooting ---- */
+  .trouble {
+    padding: 24px 40px 32px;
+    background: rgba(26, 26, 26, 0.03);
+  }
+
+  .trouble h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .trouble-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--hairline);
+    font-size: 12.5px;
+  }
+
+  .trouble-item:last-child {
+    border-bottom: none;
+  }
+
+  .trouble-q {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .trouble-a {
+    color: var(--ink-soft);
+  }
+
+  .trouble-a code {
+    color: var(--ink);
+  }
+
+  /* ---- Footer ---- */
+  .footer {
+    padding: 20px 40px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 700px) {
+    body { padding: 20px 10px 40px; }
+    .header, .section-header, .section-summary, .steps, .reference, .trouble {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    .title { font-size: 32px; }
+    .section-title { font-size: 24px; }
+    .reference { grid-template-columns: 1fr; }
+    .meta { text-align: left; }
+  }
+
+  /* ---- Print ---- */
+  @media print {
+    body { background: white; padding: 0; }
+    .page { box-shadow: none; border: 1px solid black; }
+    pre, .cmd { background: white; color: black; border: 1px solid black; }
+    .footer { background: white; color: black; border-top: 1px solid black; }
+  }
+
+  /* ---- Subtle interaction ---- */
+  pre, .cmd {
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  pre:hover, .cmd:hover {
+    background: #2a2a2a;
+  }
+  pre::after, .cmd::after {
+    content: "click to copy";
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  pre:hover::after, .cmd:hover::after {
+    opacity: 1;
+  }
+  pre.copied::after, .cmd.copied::after {
+    content: "✓ copied";
+    color: #6db66d;
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header">
+    <div>
+      <div class="title">Photography Ops</div>
+      <div style="font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-top: 8px;">
+        Cheat Sheet — Gray Hammon Photo
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-row"><span class="meta-label">For</span> &nbsp; future me on a bad night</div>
+      <div class="meta-row"><span class="meta-label">Assumes</span> &nbsp; macOS · zsh · rclone installed</div>
+      <div class="meta-row"><span class="meta-label">Find this at</span> &nbsp; /Users/graysonhammon/Desktop/photography-ops.html</div>
+    </div>
+  </div>
+
+  <div class="banner">
+    <span>Click any black command block to copy it</span>
+    <span>Organize · Back up · Update portfolio</span>
+  </div>
+
+  <!-- ============================================
+       PROJECT ORGANIZATION
+       ============================================ -->
+  <section class="section">
+
+    <div class="section-header">
+      <div class="section-title">Organize a project</div>
+      <div class="section-tag">Before anything else</div>
+    </div>
+
+    <div class="section-summary">
+      Every shoot becomes a folder under <code>~/Photos/</code>. Same name in the same shape, every time. Future-you scanning a folder list should be able to tell what each one is in 2 seconds.
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Pick a folder name</h3>
+          <p>Format: <code>YYYY-MM-DD_category_descriptor</code> — all lowercase, hyphens within tokens, underscores between tokens. Date first so chronological sort = visual sort.</p>
+          <div class="cmd">2026-05-03_personal_susu-prom</div>
+          <div class="note">
+            <strong>Just two categories</strong>
+            <code>client</code> (paid work) · <code>personal</code> (everything else). The subject lives in the descriptor — <code>niles-headshot</code>, <code>morozko-forge</code>, <code>puerto-vallarta</code>. Binary is easier than clever.
+          </div>
+          <div class="note" style="border-left-color: var(--ink-faint); background: rgba(26,26,26,0.04);">
+            <strong style="color: var(--ink-soft);">Rules</strong>
+            No spaces · no capitals · no apostrophes · don't repeat the year in the descriptor · drop articles like "the" / "a"
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Create the standard subfolders</h3>
+          <p>Same four folders inside every project. Empty is fine — they fill up as the project moves along.</p>
+          <div class="cmd">mkdir -p ~/Photos/2026-05-03_personal_susu-prom/{raws,selects,edits,delivered}</div>
+          <div class="expect">Resulting structure:
+2026-05-03_personal_susu-prom/
+├── raws/         source files from the camera
+├── selects/      narrowed selection for editing
+├── edits/        exported finals (jpegs, prints)
+└── delivered/    what the client actually got</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Drop in raws and proceed</h3>
+          <p>Card → <code>raws/</code> first. Once raws are in place, you can run a backup immediately (see next section), then continue with culling and editing over the following days. Each phase gets its own backup checkpoint.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       ARCHIVE / BACKUP
+       ============================================ -->
+  <section class="section section-archive">
+
+    <div class="section-header">
+      <div class="section-title">Back up a project</div>
+      <div class="section-tag">B2 cloud + external drive · 3-2-1</div>
+    </div>
+
+    <div class="section-summary">
+      One command sends a project folder to both the Backblaze B2 archive and the external drive. Re-running is cheap — only new files transfer. Run after each phase: raws → selects → edits → delivered.
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Plug in the external drive (if you have one)</h3>
+          <p>Drive should mount at <code>/Volumes/PhotoBackup</code>. If not plugged in, the script will warn and continue with just the B2 archive — you can re-run later to catch the drive up.</p>
+          <div class="cmd">ls /Volumes/</div>
+          <div class="expect">Should list <code>PhotoBackup</code> among the mounted volumes if the drive is connected.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Go to the ops repo</h3>
+          <div class="cmd">cd /Users/graysonhammon/photography-ops</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Dry run first (always, for big uploads)</h3>
+          <p>Optional but smart for first-time uploads or after large editing sessions. Same command as the real run, just with <code>--dry-run</code> appended.</p>
+          <div class="cmd">./scripts/backup-project.sh ~/Photos/2026-05-03_personal_susu-prom --dry-run</div>
+          <div class="expect">Lists files that would transfer to B2 and (if drive is mounted) to the external drive. Nothing actually moves. Verify the file count looks right.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Run the backup</h3>
+          <p>Same command, no <code>--dry-run</code>. Pushes to B2 archive AND copies to external drive in one shot.</p>
+          <div class="cmd">./scripts/backup-project.sh ~/Photos/2026-05-03_personal_susu-prom</div>
+          <div class="expect">Two progress sections (B2, then drive), then a verification block comparing sizes. If the drive is missing you'll see a warning and a "partial" status — that's fine, re-run later when plugged in.</div>
+          <div class="note">
+            <strong>Re-runs are safe and fast</strong>
+            Both rclone and rsync skip files that already exist unchanged. Running the same command after every project phase only transfers what's new.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Verify on B2 (occasional sanity check)</h3>
+          <p>Confirm files actually landed. Lock should show as Governance Mode in the B2 web UI.</p>
+          <div class="cmd">./scripts/archive-list.sh 2026-05-03_personal_susu-prom</div>
+          <div class="expect">Every file with size. Or browse to the bucket in B2 web UI; check one file's Object Lock: Governance Mode, expires ~1 year out.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Occasional: check total archive size / cost</h3>
+          <div class="cmd">./scripts/archive-list.sh --size</div>
+          <div class="expect">Total bytes used. Multiply GB × $0.006 for the monthly cost.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="trouble">
+      <h3>If something breaks</h3>
+
+      <div class="trouble-item">
+        <div class="trouble-q">"AccessDenied: not entitled"</div>
+        <div class="trouble-a">The B2 application key is wrong, expired, or deleted. Rotate via B2 web UI → Application Keys → create new → update rclone with <code>rclone config</code> → e → s3 → replace access_key_id and secret_access_key.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">"CreateBucket: AccessDenied"</div>
+        <div class="trouble-a">rclone is trying to recreate the bucket. Check that <code>no_check_bucket = true</code> is set: <code>rclone config show s3</code></div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">"⚠ External drive not mounted"</div>
+        <div class="trouble-a">Drive isn't plugged in, or it's named something other than <code>PhotoBackup</code>. B2 was still updated. Plug in the drive and re-run. If your drive has a different name, edit <code>EXT_VOLUME</code> at the top of <code>backup-project.sh</code>.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">Wanted to delete a file, B2 refuses</div>
+        <div class="trouble-a">Object Lock is doing its job. File is locked for 1 year from upload. For real cleanup, create a temporary B2 key with <code>bypassGovernance</code> capability, then use <code>rclone delete --s3-bypass-governance-retention</code>. Delete the temp key afterward.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">Need to restore from the archive</div>
+        <div class="trouble-a"><code>./scripts/archive-restore.sh 2026-05-03_personal_susu-prom ~/restored/susu-prom</code></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================
+       PORTFOLIO
+       ============================================ -->
+  <section class="section section-portfolio">
+
+    <div class="section-header">
+      <div class="section-title">Update the portfolio</div>
+      <div class="section-tag">Cloudflare R2 · Public · grayhammonphoto.com</div>
+    </div>
+
+    <div class="section-summary">
+      Add or remove photos on the live site. The People / Places / Things folders are the source of truth — <code>process-photos.sh</code> mirrors them to R2 (adds new, removes any you've taken out), then rebuild <code>index.html</code>. Site rebuilds on push.
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Sort selected JPGs into tab folders</h3>
+          <p>Hand-pick the ones you want public, then drop each into the folder for its tab: <code>Photos/People/</code> (portraits), <code>Photos/Places/</code> (landscapes / location shots), or <code>Photos/Things/</code> (everything else). The folder is what puts a photo in that tab. Originals go into the B2 archive separately (other workflow).</p>
+          <div class="cmd">cd /Users/graysonhammon/photography-portfolio-site</div>
+          <div class="expect">Working from the repo root. Each new JPG (any case) sits in Photos/People, Photos/Places, or Photos/Things. Files left loose in Photos/ are skipped with a warning.</div>
+          <div class="note" style="border-left-color: var(--ink-faint); background: rgba(26,26,26,0.04);">
+            <strong style="color: var(--ink-soft);">Don't confuse the two "categories"</strong>
+            These People/Places/Things folders live in the <em>repo's</em> ./Photos/ and only control gallery tabs. They're unrelated to the <code>client</code>/<code>personal</code> categories in your ~/Photos shoot library.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Sync folders to R2, write categories</h3>
+          <p>Generates 800/1600/2400px variants (flat names, so URLs never change) and <strong>mirrors</strong> your folders to R2 — uploading new photos, deleting any no longer in a folder, and pruning the local cache to match — then rewrites <code>docs/photo-categories.tsv</code>. Cached photos are skipped. Empty folders? It refuses to run rather than wipe the site.</p>
+          <div class="cmd">./scripts/process-photos.sh</div>
+          <div class="expect">Lists any photos being removed, an rclone sync progress bar, then "N photos live — X new variants generated, Y cache files pruned, Z removed from R2."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Regenerate gallery HTML</h3>
+          <p>Reads the photo list from R2 and the tabs from <code>docs/photo-categories.tsv</code>, then rewrites the gallery in <code>index.html</code> — each photo tagged with its category.</p>
+          <div class="cmd">./scripts/generate-gallery.sh</div>
+          <div class="expect">"Found N photos" → "Updated ./index.html with N photos." Any photo not in the manifest is listed as defaulting to "things."</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Preview locally (optional but smart)</h3>
+          <p>Open <code>index.html</code> in a browser and click through People / Places / Things to check each tab looks right before pushing. (Page lands on People.)</p>
+          <div class="cmd">open index.html</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>Sanity-check the diff</h3>
+          <div class="cmd">git diff index.html | head -40</div>
+          <div class="expect">Should show new <code>&lt;div class="gallery-item" data-category="…"&gt;</code> blocks being added, with srcset attributes ending in <code>2400w"</code>.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h3>Commit and push</h3>
+          <p>Pushing to GitHub triggers a Cloudflare Pages build, which then hosts the site. Changes go live in ~1–3 minutes.</p>
+          <div class="cmd">git add -A
+git commit -m "Update gallery"
+git push</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <h3>Verify the live site</h3>
+          <p>Wait ~2 minutes, then open in a private/incognito window (skips cache).</p>
+          <div class="cmd">open -na "Google Chrome" --args --incognito "https://grayhammonphoto.com"</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="trouble">
+      <h3>If something breaks</h3>
+
+      <div class="trouble-item">
+        <div class="trouble-q">"didn't find section in config file (r2)"</div>
+        <div class="trouble-a">The r2 rclone remote got renamed or deleted. Check with <code>rclone listremotes</code>. If it's named something else, either rename it back to <code>r2</code> or edit the <code>BUCKET_PATH</code>/<code>R2_REMOTE</code> variables in the scripts.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">process-photos.sh: "magick: command not found"</div>
+        <div class="trouble-a">Install ImageMagick: <code>brew install imagemagick</code></div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">generate-gallery.sh: "no photos found"</div>
+        <div class="trouble-a">R2 bucket is empty or path is wrong. Verify: <code>rclone ls r2:grayhammon-photos/photos | head</code></div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">A photo didn't show up / got skipped</div>
+        <div class="trouble-a">It's probably sitting loose in <code>Photos/</code> instead of inside <code>People/</code>, <code>Places/</code>, or <code>Things/</code>. Move it into a category folder and re-run <code>process-photos.sh</code> then <code>generate-gallery.sh</code>.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">A photo is in the wrong tab</div>
+        <div class="trouble-a">The tab comes from the folder. Move the original between <code>Photos/People</code>, <code>Photos/Places</code>, <code>Photos/Things</code>, then re-run <code>process-photos.sh</code> and <code>generate-gallery.sh</code>. R2 stays flat, so the URL doesn't change, and the manifest is rebuilt from the folders — no hand-editing needed.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">Site shows old photos after push</div>
+        <div class="trouble-a">Browser cache. Try incognito. If it's still cached: Cloudflare dashboard → Caching → Configuration → Purge Everything.</div>
+      </div>
+
+      <div class="trouble-item">
+        <div class="trouble-q">Want to remove a photo from the site</div>
+        <div class="trouble-a">Delete it from its folder and re-run — the folders are the source of truth, so <code>process-photos.sh</code> syncs the deletion to R2, prunes the cache, and drops it from the manifest. It lists what it's removing first. Your B2 master is untouched.
+          <div class="cmd" style="margin-top: 8px;">rm Photos/People/DSC01234.jpg
+./scripts/process-photos.sh
+./scripts/generate-gallery.sh
+git add -A && git commit -m "Remove photo" && git push</div>
+          <div class="note"><strong>Heads up</strong> The folders now drive deletions. Anything missing from Photos/ (a moved file, an unmounted drive) gets removed from the site on the next run — that's why process-photos.sh refuses to run on empty folders.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================
+       REFERENCE CARDS
+       ============================================ -->
+  <section class="section">
+
+    <div class="section-header">
+      <div class="section-title">Reference</div>
+      <div class="section-tag">Where things live</div>
+    </div>
+
+    <div class="reference">
+
+      <div class="ref-card">
+        <h4>Archive (B2)</h4>
+        <dl>
+          <dt>Bucket</dt>
+          <dd>gray-hammon-photo-raw-archive</dd>
+          <dt>Region</dt>
+          <dd>us-west-004</dd>
+          <dt>rclone remote</dt>
+          <dd>s3:</dd>
+          <dt>Web console</dt>
+          <dd>secure.backblaze.com</dd>
+          <dt>Application key in</dt>
+          <dd>1Password</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>Portfolio (R2)</h4>
+        <dl>
+          <dt>Bucket</dt>
+          <dd>grayhammon-photos</dd>
+          <dt>Public at</dt>
+          <dd>photos.grayhammonphoto.com</dd>
+          <dt>rclone remote</dt>
+          <dd>r2:</dd>
+          <dt>Web console</dt>
+          <dd>dash.cloudflare.com</dd>
+          <dt>API token in</dt>
+          <dd>1Password</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>Site (GitHub → Cloudflare Pages)</h4>
+        <dl>
+          <dt>Live at</dt>
+          <dd>grayhammonphoto.com</dd>
+          <dt>Repo (GitHub)</dt>
+          <dd>photography-portfolio-site</dd>
+          <dt>Local path</dt>
+          <dd>/Users/graysonhammon/photography-portfolio-site</dd>
+          <dt>Build + host</dt>
+          <dd>Cloudflare Pages, connected to the GitHub repo</dd>
+          <dt>Deploy trigger</dt>
+          <dd>git push → GitHub → Cloudflare Pages builds & hosts</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>Gallery tabs</h4>
+        <dl>
+          <dt>Tabs</dt>
+          <dd>People · Places · Things (lands on People)</dd>
+          <dt>Set by</dt>
+          <dd>which Photos/ folder a photo is in</dd>
+          <dt>Manifest</dt>
+          <dd>docs/photo-categories.tsv (auto-written by process-photos.sh)</dd>
+          <dt>Deep link</dt>
+          <dd>grayhammonphoto.com/#places</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>Ops repo</h4>
+        <dl>
+          <dt>Repo</dt>
+          <dd>photography-ops (private)</dd>
+          <dt>Local path</dt>
+          <dd>/Users/graysonhammon/photography-ops</dd>
+          <dt>Holds</dt>
+          <dd>archive scripts + full workflow docs + disaster recovery</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>External drive</h4>
+        <dl>
+          <dt>Expected name</dt>
+          <dd>PhotoBackup</dd>
+          <dt>Mount path</dt>
+          <dd>/Volumes/PhotoBackup</dd>
+          <dt>Photos go to</dt>
+          <dd>/Volumes/PhotoBackup/Photos/&lt;project-name&gt;</dd>
+          <dt>If named differently</dt>
+          <dd>Edit EXT_VOLUME at the top of backup-project.sh</dd>
+        </dl>
+      </div>
+
+      <div class="ref-card">
+        <h4>Naming convention</h4>
+        <dl>
+          <dt>Format</dt>
+          <dd>YYYY-MM-DD_category_descriptor</dd>
+          <dt>Categories</dt>
+          <dd>client (paid) · personal (everything else)</dd>
+          <dt>Rules</dt>
+          <dd>lowercase, hyphens within tokens, underscores between tokens, no spaces, no year in descriptor</dd>
+          <dt>Subfolders</dt>
+          <dd>raws · selects · edits · delivered</dd>
+        </dl>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="footer">
+    Built once · Updated when things change · Open this on a bad night
+  </div>
+
+</div>
+
+<script>
+  // Click-to-copy for code blocks
+  document.querySelectorAll('pre, .cmd').forEach(block => {
+    block.addEventListener('click', async () => {
+      const text = block.textContent.replace(/click to copy|✓ copied/g, '').trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        block.classList.add('copied');
+        setTimeout(() => block.classList.remove('copied'), 1500);
+      } catch (err) {
+        // Fallback: select the text so user can Cmd+C
+        const range = document.createRange();
+        range.selectNodeContents(block);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

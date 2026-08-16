@@ -1,26 +1,30 @@
 #!/bin/bash
-# process-photos.sh — resize source photos for web, upload to R2, and record
-# which tab (People / Places / Things) each photo belongs to.
+# process-photos.sh — make the live portfolio match your Photos/ folders.
 #
-# Photos are sorted purely by which subfolder of the source directory they
-# live in:
+# The category subfolders of the source directory are the SINGLE SOURCE OF
+# TRUTH for what's on the site:
 #
 #   Photos/
 #   ├── People/   → tab "people"   (portraits)
 #   ├── Places/   → tab "places"   (landscapes / location shots)
 #   └── Things/   → tab "things"   (everything else)
 #
-# For each photo this script generates 800/1600/2400px variants (skipping any
-# already cached), uploads them to R2 with FLAT names (no category in the
-# path, so public image URLs never change), and (re)writes the category
-# manifest that generate-gallery.sh reads.
+# Each run generates 800/1600/2400px variants for every photo in those folders
+# (skipping cached ones), then MIRRORS them to R2 — adding new photos AND
+# deleting any photo no longer in a folder — and rewrites the category
+# manifest from the folders.
 #
-# To move a photo to a different tab: move its original between folders and
-# re-run this script, then generate-gallery.sh.
+#   • To add a photo:    drop it in a folder, re-run.
+#   • To remove a photo: delete it from its folder, re-run.
+#   • To re-tab a photo: move it between folders, re-run.
+#
+# Because the folders drive deletions, an empty or unmounted source directory
+# is treated as an error — it will NOT wipe the site. Your true originals live
+# in the B2 archive regardless.
 #
 # Usage:
 #   ./scripts/process-photos.sh              # uses ./Photos as source
-#   ./scripts/process-photos.sh ./MyShoot    # custom source directory
+#   ./scripts/process-photos.sh ./MyPhotos   # custom source directory
 
 set -euo pipefail
 
@@ -34,27 +38,16 @@ SIZES=(800 1600 2400)
 QUALITY=85
 
 # ---- Validate ----
-if [ ! -d "$SOURCE_DIR" ]; then
-  echo "Error: source directory $SOURCE_DIR does not exist" >&2
-  exit 1
-fi
-
-if ! command -v magick >/dev/null 2>&1; then
-  echo "Error: ImageMagick (magick command) not found. Install with: brew install imagemagick" >&2
-  exit 1
-fi
-
-if ! command -v rclone >/dev/null 2>&1; then
-  echo "Error: rclone is not installed or not on PATH" >&2
-  exit 1
-fi
+[ -d "$SOURCE_DIR" ] || { echo "Error: source directory $SOURCE_DIR does not exist" >&2; exit 1; }
+command -v magick >/dev/null 2>&1 || { echo "Error: ImageMagick (magick) not found. Install with: brew install imagemagick" >&2; exit 1; }
+command -v rclone  >/dev/null 2>&1 || { echo "Error: rclone is not installed or not on PATH" >&2; exit 1; }
 
 mkdir -p "$WORK_DIR"
 
 TMPD=$(mktemp -d)
 trap 'rm -rf "$TMPD"' EXIT
 : > "$TMPD/seen"
-: > "$TMPD/new"
+: > "$TMPD/new"     # id <TAB> cat — authoritative set from the folders
 : > "$TMPD/dups"
 
 echo "Source:  $SOURCE_DIR"
@@ -132,9 +125,11 @@ for cat in "${CATEGORIES[@]}"; do
   shopt -u nullglob nocaseglob
 done
 
+# ---- Safety: never let an empty/unmounted source wipe the site ----
 if [ "$count" -eq 0 ]; then
   echo "Error: no photos found in $SOURCE_DIR/People, $SOURCE_DIR/Places, or $SOURCE_DIR/Things." >&2
-  echo "Create those folders and sort your .jpg files into them." >&2
+  echo "Refusing to continue — syncing an empty source would delete every photo from" >&2
+  echo "the site. If that's really what you want, clear the R2 bucket manually." >&2
   exit 1
 fi
 
@@ -145,52 +140,65 @@ if [ -s "$TMPD/dups" ]; then
   sort -u "$TMPD/dups" | while IFS= read -r d; do echo "  - $d" >&2; done
 fi
 
-echo ""
-echo "Processed $count photos ($new new size variants generated)."
-echo ""
+# Authoritative id set from the folders.
+cut -f1 "$TMPD/new" | sort -u > "$TMPD/ids"
 
-# ---- Upload to R2 (flat) ----
-echo "Uploading to $R2_REMOTE..."
-rclone copy "$WORK_DIR" "$R2_REMOTE" \
+# ---- Prune the local cache so it matches the folders ----
+pruned=0
+shopt -s nullglob
+for f in "$WORK_DIR"/*_800.jpg "$WORK_DIR"/*_1600.jpg "$WORK_DIR"/*_2400.jpg; do
+  bn=$(basename "$f")
+  fid="${bn%.*}"; fid="${fid%_800}"; fid="${fid%_1600}"; fid="${fid%_2400}"
+  if ! grep -qxF "$fid" "$TMPD/ids"; then
+    rm -f "$f"
+    pruned=$((pruned + 1))
+  fi
+done
+shopt -u nullglob
+
+# ---- Report photos about to be removed from R2 ----
+: > "$TMPD/r2ids"
+rclone lsf "$R2_REMOTE" 2>/dev/null \
+  | grep -E '_(800|1600|2400)\.jpg$' \
+  | sed -E 's/_(800|1600|2400)\.jpg$//' \
+  | sort -u > "$TMPD/r2ids" || true
+
+removed=$(comm -23 "$TMPD/r2ids" "$TMPD/ids" || true)
+if [ -n "$removed" ]; then
+  echo ""
+  echo "Removing from the site (no longer in any folder):"
+  printf '%s\n' "$removed" | sed 's/^/  - /'
+fi
+
+# ---- Mirror the cache to R2 (adds new photos, deletes removed ones) ----
+echo ""
+echo "Syncing to $R2_REMOTE..."
+rclone sync "$WORK_DIR" "$R2_REMOTE" \
   --progress \
   --transfers 8 \
   --checksum
 
-# ---- Update the category manifest ----
-# Photos found in folders this run are authoritative. Any photo already in the
-# manifest but NOT present locally this run keeps its existing category, so
-# cleaning out old originals never loses a tab assignment.
-mkdir -p "$(dirname "$MANIFEST")"
-
-if [ -f "$MANIFEST" ]; then
-  grep -v '^[[:space:]]*#' "$MANIFEST" | awk 'NF' > "$TMPD/old" || true
-else
-  : > "$TMPD/old"
-fi
-
-awk 'NR==FNR { set[$1]=1; next } !($1 in set)' "$TMPD/new" "$TMPD/old" > "$TMPD/keep"
-cat "$TMPD/keep" "$TMPD/new" | sort > "$TMPD/sorted"
-
+# ---- Rewrite the manifest from the folders ----
+sort "$TMPD/new" > "$TMPD/sorted"
 {
   cat <<'HDR'
 # photo-categories.tsv — which tab each photo appears in (People/Places/Things)
 #
-# AUTO-GENERATED by scripts/process-photos.sh from the category subfolders of
-# ./Photos (People/, Places/, Things/). You don't normally edit this by hand —
-# move a photo between those folders and re-run process-photos.sh to change
-# its tab. A hand-edit survives the next run only for a photo you no longer
-# keep locally.
+# FULLY REGENERATED by scripts/process-photos.sh on every run, from the
+# category subfolders of ./Photos (People/, Places/, Things/). Those folders
+# are the single source of truth: a photo not in a folder is not on the site.
+# Don't hand-edit — changes are overwritten on the next run.
 #
 # Format:  <photo-id><TAB><category>   (category = people | places | things)
-# Photos that generate-gallery.sh finds in R2 but that aren't listed here
-# default to "things".
 #
 HDR
   cat "$TMPD/sorted"
 } > "$MANIFEST"
 
-cat_count=$(wc -l < "$TMPD/sorted" | tr -d ' ')
+# ---- Summary ----
+live=$(wc -l < "$TMPD/ids" | tr -d ' ')
+nremoved=$(printf '%s\n' "$removed" | sed '/^$/d' | wc -l | tr -d ' ')
 echo ""
-echo "Done. Wrote $cat_count photo categories to $MANIFEST."
+echo "Done. $live photos live — $new new variants generated, $pruned cache files pruned, $nremoved removed from R2."
 echo ""
 echo "Next step: ./scripts/generate-gallery.sh"
